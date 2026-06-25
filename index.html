@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yesly Adelay · Futurista</title>
+  
+  <!-- Fuentes y librerías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <!-- Firebase SDKs (versión modular) -->
+  <script type="module">
+    // Importar Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword, 
+      signInWithEmailAndPassword,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+    import { 
+      getDatabase, 
+      ref, 
+      set, 
+      get, 
+      child,
+      update
+    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+
+    // Configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyB1Cs2os3tTfrMbYSAmDeJAGnP4tTtsFdw",
+      authDomain: "beaver-trading.firebaseapp.com",
+      databaseURL: "https://beaver-trading-default-rtdb.firebaseio.com",
+      projectId: "beaver-trading",
+      storageBucket: "beaver-trading.firebasestorage.app",
+      messagingSenderId: "926610131904",
+      appId: "1:926610131904:web:c147bd337bd12b4d085625",
+      measurementId: "G-1K51WWF2ZJ"
+    };
+
+    // Inicializar Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    console.log('🔥 Firebase inicializado correctamente');
+
+    // --- VERIFICAR SESIÓN ACTIVA ---
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          // Verificar que el usuario existe en la base de datos
+          const dbRef = ref(database);
+          const snapshot = await get(child(dbRef, `users/${user.uid}`));
+          
+          if (snapshot.exists()) {
+            console.log('✅ Usuario verificado en DB:', snapshot.val());
+            // Redirigir a home.html
+            window.location.href = "home.html";
+          } else {
+            console.warn('⚠️ Usuario autenticado pero NO existe en DB');
+            // Si no existe en DB, cerrar sesión
+            await auth.signOut();
+            alert('Tu cuenta no está registrada en la base de datos. Contacta con soporte.');
+          }
+        } catch (error) {
+          console.error('Error verificando usuario en DB:', error);
+        }
+      }
+    });
+
+    // --- ELEMENTOS DEL DOM ---
+    const loginForm = document.getElementById('loginFormElement');
+    const registerForm = document.getElementById('registerFormElement');
+    const tabLogin = document.getElementById('tabLogin');
+    const tabRegister = document.getElementById('tabRegister');
+    const loginContainer = document.getElementById('loginForm');
+    const registerContainer = document.getElementById('registerForm');
+
+    // --- FUNCIÓN PARA CAMBIAR DE PESTAÑA ---
+    function setActiveTab(tab) {
+      tabLogin.classList.remove('active');
+      tabRegister.classList.remove('active');
+      tab.classList.add('active');
+
+      if (tab === tabLogin) {
+        loginContainer.classList.remove('hidden');
+        registerContainer.classList.add('hidden');
+      } else {
+        registerContainer.classList.remove('hidden');
+        loginContainer.classList.add('hidden');
+      }
+    }
+
+    tabLogin.addEventListener('click', () => setActiveTab(tabLogin));
+    tabRegister.addEventListener('click', () => setActiveTab(tabRegister));
+
+    // --- REGISTRO DE USUARIO ---
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = registerForm.querySelector('input[type="text"]').value.trim();
+      const email = registerForm.querySelector('input[type="email"]').value.trim();
+      const password = registerForm.querySelector('input[type="password"]').value;
+
+      // Validaciones
+      if (!name || !email || !password) {
+        alert('⚠️ Por favor, completa todos los campos.');
+        return;
+      }
+
+      if (password.length < 6) {
+        alert('⚠️ La contraseña debe tener al menos 6 caracteres.');
+        return;
+      }
+
+      try {
+        // 1. Crear usuario en Firebase Authentication
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // 2. Guardar información adicional en Realtime Database
+        const userRef = ref(database, `users/${user.uid}`);
+        await set(userRef, {
+          uid: user.uid,
+          name: name,
+          email: user.email,
+          createdAt: new Date().toISOString(),
+          lastLogin: new Date().toISOString(),
+          active: true
+        });
+
+        console.log('✅ Usuario registrado y guardado en DB:', {
+          uid: user.uid,
+          name: name,
+          email: user.email
+        });
+
+        alert('✅ ¡Registro exitoso! Redirigiendo...');
+        // Redirigir a home.html
+        window.location.href = "home.html";
+
+      } catch (error) {
+        console.error('❌ Error en registro:', error);
+        let mensaje = '❌ Error al registrar. ';
+        
+        if (error.code === 'auth/email-already-in-use') {
+          mensaje += 'Este correo ya está registrado.';
+        } else if (error.code === 'auth/invalid-email') {
+          mensaje += 'Correo electrónico inválido.';
+        } else if (error.code === 'auth/weak-password') {
+          mensaje += 'La contraseña es muy débil.';
+        } else {
+          mensaje += error.message;
+        }
+        alert(mensaje);
+      }
+    });
+
+    // --- INICIO DE SESIÓN ---
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = loginForm.querySelector('input[type="email"]').value.trim();
+      const password = loginForm.querySelector('input[type="password"]').value;
+
+      if (!email || !password) {
+        alert('⚠️ Por favor, completa todos los campos.');
+        return;
+      }
+
+      try {
+        // 1. Autenticar usuario con Firebase Auth
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // 2. Verificar que el usuario existe en Realtime Database
+        const dbRef = ref(database);
+        const snapshot = await get(child(dbRef, `users/${user.uid}`));
+
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          console.log('✅ Usuario verificado en DB:', userData);
+          
+          // Actualizar último login
+          await update(ref(database, `users/${user.uid}`), {
+            lastLogin: new Date().toISOString()
+          });
+
+          alert('✅ ¡Inicio de sesión exitoso!');
+          // Redirigir a home.html
+          window.location.href = "home.html";
+        } else {
+          // El usuario existe en Auth pero no en DB - cerrar sesión
+          await auth.signOut();
+          alert('❌ Usuario no encontrado en la base de datos. Contacta con soporte.');
+        }
+
+      } catch (error) {
+        console.error('❌ Error en login:', error);
+        let mensaje = '❌ Error al iniciar sesión. ';
+        
+        if (error.code === 'auth/user-not-found') {
+          mensaje += 'Usuario no encontrado.';
+        } else if (error.code === 'auth/wrong-password') {
+          mensaje += 'Contraseña incorrecta.';
+        } else if (error.code === 'auth/invalid-email') {
+          mensaje += 'Correo electrónico inválido.';
+        } else if (error.code === 'auth/too-many-requests') {
+          mensaje += 'Demasiados intentos. Intenta más tarde.';
+        } else {
+          mensaje += error.message;
+        }
+        alert(mensaje);
+      }
+    });
+
+    // Exponer funciones para los enlaces
+    window.cambiarATab = (tab) => {
+      if (tab === 'login') {
+        setActiveTab(tabLogin);
+      } else if (tab === 'register') {
+        setActiveTab(tabRegister);
+      }
+    };
+
+    console.log('✅ Firebase Auth + Database inicializados');
+  </script>
+
+  <style>
+    /* === ESTILOS FUTURISTAS === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at 20% 30%, #0b0d1a, #03040a);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+      color: #f0f4ff;
+    }
+
+    .glass-card {
+      background: rgba(20, 25, 45, 0.55);
+      backdrop-filter: blur(14px) saturate(180%);
+      -webkit-backdrop-filter: blur(14px) saturate(180%);
+      border: 1px solid rgba(120, 180, 255, 0.15);
+      box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(0, 255, 255, 0.05) inset;
+      border-radius: 3rem;
+      padding: 2.5rem 2.2rem;
+      max-width: 480px;
+      width: 100%;
+      transition: all 0.25s ease;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(100, 200, 255, 0.3);
+      box-shadow: 0 40px 70px -15px #00a6ff2e, 0 0 0 1px #3ac0ff30 inset;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .brand h1 {
+      font-weight: 700;
+      font-size: 2.5rem;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #d6eaff, #9ac9ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 25px #0077ff40;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    .brand h1 i {
+      font-size: 2rem;
+      color: #6cb4ff;
+      filter: drop-shadow(0 0 8px #0080ff80);
+    }
+
+    .brand .sub {
+      font-weight: 300;
+      font-size: 0.9rem;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: #9bb9e6;
+      opacity: 0.7;
+      margin-top: 0.1rem;
+      border-top: 1px solid #3b6a9f40;
+      padding-top: 0.5rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(0, 20, 40, 0.4);
+      padding: 0.4rem;
+      border-radius: 60px;
+      margin-bottom: 2rem;
+      border: 1px solid #2d4b7a30;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 0.7rem 0.2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #aac2ec;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.3px;
+    }
+
+    .tab-btn.active {
+      background: rgba(60, 140, 255, 0.25);
+      color: white;
+      box-shadow: 0 0 20px #0077ff40;
+      backdrop-filter: blur(4px);
+    }
+
+    .tab-btn:hover {
+      color: white;
+      background: rgba(80, 160, 255, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 1.6rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #b0cdf5;
+      margin-bottom: 0.5rem;
+      opacity: 0.7;
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 10, 30, 0.4);
+      border-radius: 40px;
+      border: 1px solid #2f528060;
+      padding: 0.1rem 1.2rem;
+      transition: 0.2s;
+      backdrop-filter: blur(2px);
+    }
+
+    .input-wrapper:focus-within {
+      border-color: #80bdff;
+      box-shadow: 0 0 20px #0080ff30;
+      background: rgba(10, 30, 60, 0.5);
+    }
+
+    .input-wrapper i {
+      color: #6f9ed8;
+      font-size: 1rem;
+      margin-right: 0.8rem;
+      opacity: 0.7;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 0.9rem 0;
+      font-size: 1rem;
+      color: white;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+    }
+
+    .input-wrapper input::placeholder {
+      color: #809fc9;
+      font-weight: 300;
+      opacity: 0.6;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 0.9rem;
+      border: none;
+      border-radius: 60px;
+      background: linear-gradient(135deg, #3b8bff, #1b5ec9);
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: 0.25s;
+      box-shadow: 0 8px 25px #0044ff40;
+      margin-top: 0.4rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.02);
+      background: linear-gradient(135deg, #5a9cff, #2f72e0);
+      box-shadow: 0 12px 35px #0066ff60;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .form-footer {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #a0bae0;
+    }
+
+    .form-footer a {
+      color: #8cbaff;
+      text-decoration: none;
+      font-weight: 600;
+      border-bottom: 1px dashed #4a7ac0;
+      cursor: pointer;
+    }
+
+    .form-footer a:hover {
+      color: white;
+      border-bottom-color: white;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem 0 1.5rem;
+      color: #5b7daa;
+      font-size: 0.8rem;
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #4870a0, transparent);
+    }
+
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 0.5rem;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(20, 50, 90, 0.25);
+      backdrop-filter: blur(4px);
+      border: 1px solid #3c6b9f50;
+      color: #b8d2ff;
+      font-size: 1.2rem;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .social-link:hover {
+      background: rgba(60, 150, 255, 0.2);
+      border-color: #6db0ff;
+      color: white;
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 10px 25px #0055ff30;
+    }
+
+    .social-link i {
+      filter: drop-shadow(0 0 4px #0080ff20);
+    }
+
+    .form-container {
+      display: block;
+      transition: opacity 0.25s;
+    }
+
+    .form-container.hidden {
+      display: none;
+    }
+
+    .demo-note {
+      text-align: center;
+      font-size: 0.7rem;
+      margin-top: 1.8rem;
+      opacity: 0.3;
+      letter-spacing: 1px;
+      color: #77a3df;
+    }
+
+    @media (max-width: 450px) {
+      .glass-card {
+        padding: 1.8rem 1.2rem;
+        border-radius: 2.2rem;
+      }
+      .brand h1 {
+        font-size: 2rem;
+      }
+      .social-link {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="glass-card">
+    <!-- Brand -->
+    <div class="brand">
+      <h1>
+        <i class="fas fa-chart-line"></i>
+        Yesly Adelay
+      </h1>
+      <div class="sub">trading · futuro</div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" id="tabLogin">Iniciar sesión</button>
+      <button class="tab-btn" id="tabRegister">Registrarse</button>
+    </div>
+
+    <!-- Login -->
+    <div id="loginForm" class="form-container">
+      <form id="loginFormElement">
+        <div class="form-group">
+          <label><i class="far fa-envelope"></i> Correo</label>
+          <div class="input-wrapper">
+            <i class="fas fa-user"></i>
+            <input type="email" placeholder="tu@email.com" value="demo@beaver.com" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Contraseña</label>
+          <div class="input-wrapper">
+            <i class="fas fa-key"></i>
+            <input type="password" placeholder="••••••••" value="12345678" required />
+          </div>
+        </div>
+        <button type="submit" class="btn-primary"><i class="fas fa-sign-in-alt"></i> Acceder</button>
+        <div class="form-footer">
+          <a onclick="window.cambiarATab('register')">¿No tienes cuenta? Regístrate</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Register -->
+    <div id="registerForm" class="form-container hidden">
+      <form id="registerFormElement">
+        <div class="form-group">
+          <label><i class="far fa-user"></i> Nombre</label>
+          <div class="input-wrapper">
+            <i class="fas fa-id-badge"></i>
+            <input type="text" placeholder="Tu nombre" value="Yesly" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="far fa-envelope"></i> Correo</label>
+          <div class="input-wrapper">
+            <i class="fas fa-envelope"></i>
+            <input type="email" placeholder="tu@email.com" value="yesly@demo.com" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Contraseña</label>
+          <div class="input-wrapper">
+            <i class="fas fa-key"></i>
+            <input type="password" placeholder="mínimo 6 caracteres" value="12345678" required />
+          </div>
+        </div>
+        <button type="submit" class="btn-primary"><i class="fas fa-user-plus"></i> Crear cuenta</button>
+        <div class="form-footer">
+          <a onclick="window.cambiarATab('login')">¿Ya tienes cuenta? Inicia sesión</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Social Links -->
+    <div class="divider">CONÉCTATE</div>
+    <div class="social-links">
+      <a href="https://yesly-adelay-trading.blogspot.com/" target="_blank" class="social-link"><i class="fab fa-blogger"></i></a>
+      <a href="https://www.youtube.com/@yeslyadelay2026" target="_blank" class="social-link"><i class="fab fa-youtube"></i></a>
+      <a href="https://www.facebook.com/profile.php?id=61590192674936" target="_blank" class="social-link"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://www.tiktok.com/@yeslyadelaytrading2026" target="_blank" class="social-link"><i class="fab fa-tiktok"></i></a>
+      <a href="https://t.me/yesly_adelay" target="_blank" class="social-link"><i class="fab fa-telegram-plane"></i></a>
+      <a href="https://wa.me/593991987552" target="_blank" class="social-link"><i class="fab fa-whatsapp"></i></a>
+      <a href="https://www.mql5.com/en/channels/yesly_adelay_trading_2026" target="_blank" class="social-link"><i class="fas fa-chart-line"></i></a>
+    </div>
+
+    <div class="demo-note">
+      <i class="fas fa-database"></i> Firebase Auth + DB · Yesly Adelay
+    </div>
+  </div>
+</body>
+</html>
