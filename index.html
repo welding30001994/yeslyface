@@ -11,9 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-  <!-- Firebase SDKs (versión modular) -->
+  <!-- Firebase SDKs -->
   <script type="module">
-    // Importar Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { 
       getAuth, 
@@ -30,7 +29,6 @@
       update
     } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
 
-    // Configuración de Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyB1Cs2os3tTfrMbYSAmDeJAGnP4tTtsFdw",
       authDomain: "beaver-trading.firebaseapp.com",
@@ -42,38 +40,29 @@
       measurementId: "G-1K51WWF2ZJ"
     };
 
-    // Inicializar Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const database = getDatabase(app);
 
-    console.log('🔥 Firebase inicializado correctamente');
-
-    // --- VERIFICAR SESIÓN ACTIVA ---
+    // Verificar sesión activa
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
-          // Verificar que el usuario existe en la base de datos
           const dbRef = ref(database);
           const snapshot = await get(child(dbRef, `users/${user.uid}`));
-          
           if (snapshot.exists()) {
-            console.log('✅ Usuario verificado en DB:', snapshot.val());
-            // Redirigir a home.html
             window.location.href = "home.html";
           } else {
-            console.warn('⚠️ Usuario autenticado pero NO existe en DB');
-            // Si no existe en DB, cerrar sesión
             await auth.signOut();
-            alert('Tu cuenta no está registrada en la base de datos. Contacta con soporte.');
+            alert('⚠️ Usuario no registrado en la base de datos.');
           }
         } catch (error) {
-          console.error('Error verificando usuario en DB:', error);
+          console.error('Error:', error);
         }
       }
     });
 
-    // --- ELEMENTOS DEL DOM ---
+    // Elementos DOM
     const loginForm = document.getElementById('loginFormElement');
     const registerForm = document.getElementById('registerFormElement');
     const tabLogin = document.getElementById('tabLogin');
@@ -81,12 +70,10 @@
     const loginContainer = document.getElementById('loginForm');
     const registerContainer = document.getElementById('registerForm');
 
-    // --- FUNCIÓN PARA CAMBIAR DE PESTAÑA ---
     function setActiveTab(tab) {
       tabLogin.classList.remove('active');
       tabRegister.classList.remove('active');
       tab.classList.add('active');
-
       if (tab === tabLogin) {
         loginContainer.classList.remove('hidden');
         registerContainer.classList.add('hidden');
@@ -99,33 +86,26 @@
     tabLogin.addEventListener('click', () => setActiveTab(tabLogin));
     tabRegister.addEventListener('click', () => setActiveTab(tabRegister));
 
-    // --- REGISTRO DE USUARIO ---
+    // Registro
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
       const name = registerForm.querySelector('input[type="text"]').value.trim();
       const email = registerForm.querySelector('input[type="email"]').value.trim();
       const password = registerForm.querySelector('input[type="password"]').value;
 
-      // Validaciones
       if (!name || !email || !password) {
-        alert('⚠️ Por favor, completa todos los campos.');
+        alert('⚠️ Completa todos los campos.');
         return;
       }
-
       if (password.length < 6) {
         alert('⚠️ La contraseña debe tener al menos 6 caracteres.');
         return;
       }
 
       try {
-        // 1. Crear usuario en Firebase Authentication
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-
-        // 2. Guardar información adicional en Realtime Database
-        const userRef = ref(database, `users/${user.uid}`);
-        await set(userRef, {
+        await set(ref(database, `users/${user.uid}`), {
           uid: user.uid,
           name: name,
           email: user.email,
@@ -133,106 +113,62 @@
           lastLogin: new Date().toISOString(),
           active: true
         });
-
-        console.log('✅ Usuario registrado y guardado en DB:', {
-          uid: user.uid,
-          name: name,
-          email: user.email
-        });
-
-        alert('✅ ¡Registro exitoso! Redirigiendo...');
-        // Redirigir a home.html
+        alert('✅ ¡Registro exitoso!');
         window.location.href = "home.html";
-
       } catch (error) {
-        console.error('❌ Error en registro:', error);
         let mensaje = '❌ Error al registrar. ';
-        
-        if (error.code === 'auth/email-already-in-use') {
-          mensaje += 'Este correo ya está registrado.';
-        } else if (error.code === 'auth/invalid-email') {
-          mensaje += 'Correo electrónico inválido.';
-        } else if (error.code === 'auth/weak-password') {
-          mensaje += 'La contraseña es muy débil.';
-        } else {
-          mensaje += error.message;
-        }
+        if (error.code === 'auth/email-already-in-use') mensaje += 'Correo ya registrado.';
+        else if (error.code === 'auth/invalid-email') mensaje += 'Correo inválido.';
+        else if (error.code === 'auth/weak-password') mensaje += 'Contraseña débil.';
+        else mensaje += error.message;
         alert(mensaje);
       }
     });
 
-    // --- INICIO DE SESIÓN ---
+    // Inicio de sesión
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
       const email = loginForm.querySelector('input[type="email"]').value.trim();
       const password = loginForm.querySelector('input[type="password"]').value;
 
       if (!email || !password) {
-        alert('⚠️ Por favor, completa todos los campos.');
+        alert('⚠️ Completa todos los campos.');
         return;
       }
 
       try {
-        // 1. Autenticar usuario con Firebase Auth
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-
-        // 2. Verificar que el usuario existe en Realtime Database
         const dbRef = ref(database);
         const snapshot = await get(child(dbRef, `users/${user.uid}`));
-
+        
         if (snapshot.exists()) {
-          const userData = snapshot.val();
-          console.log('✅ Usuario verificado en DB:', userData);
-          
-          // Actualizar último login
           await update(ref(database, `users/${user.uid}`), {
             lastLogin: new Date().toISOString()
           });
-
-          alert('✅ ¡Inicio de sesión exitoso!');
-          // Redirigir a home.html
+          alert('✅ ¡Bienvenido!');
           window.location.href = "home.html";
         } else {
-          // El usuario existe en Auth pero no en DB - cerrar sesión
           await auth.signOut();
-          alert('❌ Usuario no encontrado en la base de datos. Contacta con soporte.');
+          alert('❌ Usuario no encontrado en la base de datos.');
         }
-
       } catch (error) {
-        console.error('❌ Error en login:', error);
         let mensaje = '❌ Error al iniciar sesión. ';
-        
-        if (error.code === 'auth/user-not-found') {
-          mensaje += 'Usuario no encontrado.';
-        } else if (error.code === 'auth/wrong-password') {
-          mensaje += 'Contraseña incorrecta.';
-        } else if (error.code === 'auth/invalid-email') {
-          mensaje += 'Correo electrónico inválido.';
-        } else if (error.code === 'auth/too-many-requests') {
-          mensaje += 'Demasiados intentos. Intenta más tarde.';
-        } else {
-          mensaje += error.message;
-        }
+        if (error.code === 'auth/user-not-found') mensaje += 'Usuario no encontrado.';
+        else if (error.code === 'auth/wrong-password') mensaje += 'Contraseña incorrecta.';
+        else if (error.code === 'auth/invalid-email') mensaje += 'Correo inválido.';
+        else mensaje += error.message;
         alert(mensaje);
       }
     });
 
-    // Exponer funciones para los enlaces
     window.cambiarATab = (tab) => {
-      if (tab === 'login') {
-        setActiveTab(tabLogin);
-      } else if (tab === 'register') {
-        setActiveTab(tabRegister);
-      }
+      if (tab === 'login') setActiveTab(tabLogin);
+      else setActiveTab(tabRegister);
     };
-
-    console.log('✅ Firebase Auth + Database inicializados');
   </script>
 
   <style>
-    /* === ESTILOS FUTURISTAS === */
     * {
       margin: 0;
       padding: 0;
@@ -241,31 +177,35 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at 20% 30%, #0b0d1a, #03040a);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 1.5rem;
       color: #f0f4ff;
+      background-image: url('https://raw.githubusercontent.com/welding30001994/yeslyface/refs/heads/main/yesly.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
     }
 
     .glass-card {
-      background: rgba(20, 25, 45, 0.55);
-      backdrop-filter: blur(14px) saturate(180%);
-      -webkit-backdrop-filter: blur(14px) saturate(180%);
-      border: 1px solid rgba(120, 180, 255, 0.15);
-      box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(0, 255, 255, 0.05) inset;
+      background: rgba(0, 0, 0, 0.12);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 3rem;
       padding: 2.5rem 2.2rem;
       max-width: 480px;
       width: 100%;
-      transition: all 0.25s ease;
+      transition: all 0.3s ease;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
     }
 
     .glass-card:hover {
-      border-color: rgba(100, 200, 255, 0.3);
-      box-shadow: 0 40px 70px -15px #00a6ff2e, 0 0 0 1px #3ac0ff30 inset;
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
     }
 
     .brand {
@@ -277,11 +217,8 @@
       font-weight: 700;
       font-size: 2.5rem;
       letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #d6eaff, #9ac9ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 25px #0077ff40;
+      color: white;
+      text-shadow: 0 0 30px rgba(0, 119, 255, 0.4), 0 4px 20px rgba(0, 0, 0, 0.5);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -291,7 +228,7 @@
     .brand h1 i {
       font-size: 2rem;
       color: #6cb4ff;
-      filter: drop-shadow(0 0 8px #0080ff80);
+      filter: drop-shadow(0 0 15px rgba(0, 128, 255, 0.5));
     }
 
     .brand .sub {
@@ -299,21 +236,22 @@
       font-size: 0.9rem;
       letter-spacing: 6px;
       text-transform: uppercase;
-      color: #9bb9e6;
-      opacity: 0.7;
+      color: rgba(255, 255, 255, 0.6);
       margin-top: 0.1rem;
-      border-top: 1px solid #3b6a9f40;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
       padding-top: 0.5rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
 
     .tabs {
       display: flex;
       gap: 0.5rem;
-      background: rgba(0, 20, 40, 0.4);
+      background: rgba(0, 0, 0, 0.15);
       padding: 0.4rem;
       border-radius: 60px;
       margin-bottom: 2rem;
-      border: 1px solid #2d4b7a30;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(5px);
     }
 
     .tab-btn {
@@ -324,23 +262,23 @@
       border-radius: 40px;
       font-weight: 600;
       font-size: 1rem;
-      color: #aac2ec;
+      color: rgba(255, 255, 255, 0.5);
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.3s ease;
       font-family: 'Inter', sans-serif;
-      letter-spacing: 0.3px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
 
     .tab-btn.active {
-      background: rgba(60, 140, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
       color: white;
-      box-shadow: 0 0 20px #0077ff40;
-      backdrop-filter: blur(4px);
+      box-shadow: 0 0 30px rgba(0, 119, 255, 0.15);
+      backdrop-filter: blur(10px);
     }
 
     .tab-btn:hover {
       color: white;
-      background: rgba(80, 160, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
     }
 
     .form-group {
@@ -353,33 +291,42 @@
       font-weight: 400;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: #b0cdf5;
+      color: rgba(255, 255, 255, 0.6);
       margin-bottom: 0.5rem;
-      opacity: 0.7;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
 
     .input-wrapper {
       display: flex;
       align-items: center;
-      background: rgba(0, 10, 30, 0.4);
+      background: rgba(0, 0, 0, 0.15);
       border-radius: 40px;
-      border: 1px solid #2f528060;
+      border: 1px solid rgba(255, 255, 255, 0.06);
       padding: 0.1rem 1.2rem;
-      transition: 0.2s;
-      backdrop-filter: blur(2px);
+      transition: all 0.4s ease;
+      backdrop-filter: blur(5px);
     }
 
+    /* EFECTO: borde fino + oscurecimiento suave al enfocar */
     .input-wrapper:focus-within {
-      border-color: #80bdff;
-      box-shadow: 0 0 20px #0080ff30;
-      background: rgba(10, 30, 60, 0.5);
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.35);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+      transform: scale(1.01);
     }
 
     .input-wrapper i {
-      color: #6f9ed8;
+      color: rgba(255, 255, 255, 0.4);
       font-size: 1rem;
       margin-right: 0.8rem;
-      opacity: 0.7;
+      opacity: 0.6;
+      transition: 0.3s;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .input-wrapper:focus-within i {
+      opacity: 1;
+      color: rgba(255, 255, 255, 0.8);
     }
 
     .input-wrapper input {
@@ -392,35 +339,50 @@
       outline: none;
       font-family: 'Inter', sans-serif;
       font-weight: 400;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .input-wrapper input:focus::placeholder {
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
     .input-wrapper input::placeholder {
-      color: #809fc9;
+      color: rgba(255, 255, 255, 0.35);
       font-weight: 300;
-      opacity: 0.6;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    /* AUTOCOMPLETADO - ocultar valores de demo */
+    .input-wrapper input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.3) inset !important;
+      -webkit-text-fill-color: white !important;
     }
 
     .btn-primary {
       width: 100%;
       padding: 0.9rem;
-      border: none;
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 60px;
-      background: linear-gradient(135deg, #3b8bff, #1b5ec9);
+      background: rgba(59, 139, 255, 0.6);
+      backdrop-filter: blur(10px);
       color: white;
       font-weight: 600;
       font-size: 1.1rem;
       letter-spacing: 0.5px;
       cursor: pointer;
-      transition: 0.25s;
-      box-shadow: 0 8px 25px #0044ff40;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 30px rgba(0, 68, 255, 0.15);
       margin-top: 0.4rem;
       font-family: 'Inter', sans-serif;
     }
 
     .btn-primary:hover {
       transform: scale(1.02);
-      background: linear-gradient(135deg, #5a9cff, #2f72e0);
-      box-shadow: 0 12px 35px #0066ff60;
+      background: rgba(90, 156, 255, 0.7);
+      box-shadow: 0 12px 40px rgba(0, 102, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.15);
     }
 
     .btn-primary:active {
@@ -431,20 +393,22 @@
       margin-top: 1.5rem;
       text-align: center;
       font-size: 0.9rem;
-      color: #a0bae0;
+      color: rgba(255, 255, 255, 0.5);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
 
     .form-footer a {
-      color: #8cbaff;
+      color: rgba(140, 186, 255, 0.8);
       text-decoration: none;
       font-weight: 600;
-      border-bottom: 1px dashed #4a7ac0;
+      border-bottom: 1px dashed rgba(74, 122, 192, 0.3);
       cursor: pointer;
+      transition: 0.3s;
     }
 
     .form-footer a:hover {
       color: white;
-      border-bottom-color: white;
+      border-bottom-color: rgba(255, 255, 255, 0.3);
     }
 
     .divider {
@@ -452,10 +416,11 @@
       align-items: center;
       gap: 1rem;
       margin: 2rem 0 1.5rem;
-      color: #5b7daa;
+      color: rgba(255, 255, 255, 0.2);
       font-size: 0.8rem;
       font-weight: 300;
       letter-spacing: 1px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
 
     .divider::before,
@@ -463,7 +428,7 @@
       content: "";
       flex: 1;
       height: 1px;
-      background: linear-gradient(90deg, transparent, #4870a0, transparent);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
     }
 
     .social-links {
@@ -481,25 +446,21 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: rgba(20, 50, 90, 0.25);
-      backdrop-filter: blur(4px);
-      border: 1px solid #3c6b9f50;
-      color: #b8d2ff;
+      background: rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.6);
       font-size: 1.2rem;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
       text-decoration: none;
     }
 
     .social-link:hover {
-      background: rgba(60, 150, 255, 0.2);
-      border-color: #6db0ff;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
       color: white;
       transform: translateY(-4px) scale(1.05);
-      box-shadow: 0 10px 25px #0055ff30;
-    }
-
-    .social-link i {
-      filter: drop-shadow(0 0 4px #0080ff20);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     }
 
     .form-container {
@@ -515,9 +476,10 @@
       text-align: center;
       font-size: 0.7rem;
       margin-top: 1.8rem;
-      opacity: 0.3;
+      opacity: 0.25;
       letter-spacing: 1px;
-      color: #77a3df;
+      color: rgba(255, 255, 255, 0.4);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
 
     @media (max-width: 450px) {
@@ -560,14 +522,14 @@
           <label><i class="far fa-envelope"></i> Correo</label>
           <div class="input-wrapper">
             <i class="fas fa-user"></i>
-            <input type="email" placeholder="tu@email.com" value="demo@beaver.com" required />
+            <input type="email" placeholder="ejemplo@correo.com" required />
           </div>
         </div>
         <div class="form-group">
           <label><i class="fas fa-lock"></i> Contraseña</label>
           <div class="input-wrapper">
             <i class="fas fa-key"></i>
-            <input type="password" placeholder="••••••••" value="12345678" required />
+            <input type="password" placeholder="••••••••" required />
           </div>
         </div>
         <button type="submit" class="btn-primary"><i class="fas fa-sign-in-alt"></i> Acceder</button>
@@ -584,21 +546,21 @@
           <label><i class="far fa-user"></i> Nombre</label>
           <div class="input-wrapper">
             <i class="fas fa-id-badge"></i>
-            <input type="text" placeholder="Tu nombre" value="Yesly" required />
+            <input type="text" placeholder="Tu nombre completo" required />
           </div>
         </div>
         <div class="form-group">
           <label><i class="far fa-envelope"></i> Correo</label>
           <div class="input-wrapper">
             <i class="fas fa-envelope"></i>
-            <input type="email" placeholder="tu@email.com" value="yesly@demo.com" required />
+            <input type="email" placeholder="ejemplo@correo.com" required />
           </div>
         </div>
         <div class="form-group">
           <label><i class="fas fa-lock"></i> Contraseña</label>
           <div class="input-wrapper">
             <i class="fas fa-key"></i>
-            <input type="password" placeholder="mínimo 6 caracteres" value="12345678" required />
+            <input type="password" placeholder="mínimo 6 caracteres" required />
           </div>
         </div>
         <button type="submit" class="btn-primary"><i class="fas fa-user-plus"></i> Crear cuenta</button>
@@ -621,7 +583,7 @@
     </div>
 
     <div class="demo-note">
-      <i class="fas fa-database"></i> Firebase Auth + DB · Yesly Adelay
+      <i class="fas fa-image"></i> Yesly Adelay · Trading Futurista
     </div>
   </div>
 </body>
