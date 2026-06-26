@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yesly Adelay · Julio 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* ===== Estilos base ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: url('https://raw.githubusercontent.com/welding30001994/heydin-kayser-vip/refs/heads/main/YESLY.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.70);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.8rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-shadow: 0 0 30px rgba(255, 200, 0, 0.7);
+            background: linear-gradient(135deg, #ffcc00, #ff6600, #ffcc00);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 4s ease-in-out infinite alternate;
+            letter-spacing: 3px;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .header .subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            color: #ffdd88;
+            text-shadow: 0 0 15px rgba(255, 200, 0, 0.4);
+            margin-top: 5px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            max-width: 600px;
+            margin: 12px auto 0;
+            color: #ffe0a0;
+        }
+
+        .month-badge {
+            display: inline-block;
+            margin: 20px auto 15px;
+            padding: 8px 32px;
+            background: rgba(255, 200, 0, 0.08);
+            border: 1px solid rgba(255, 200, 0, 0.3);
+            border-radius: 60px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: #ffcc00;
+            text-shadow: 0 0 25px rgba(255, 200, 0, 0.5);
+            box-shadow: 0 0 30px rgba(255, 200, 0, 0.15);
+            backdrop-filter: blur(4px);
+            border-color: rgba(255, 200, 0, 0.3);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 22px;
+            padding: 20px 10px;
+        }
+
+        .folder {
+            background: rgba(12, 15, 30, 0.75);
+            border-radius: 15px;
+            padding: 20px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 200, 0, 0.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .folder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 200, 0, 0.08), transparent);
+            transition: left 0.6s;
+        }
+
+        .folder:hover::before {
+            left: 100%;
+        }
+
+        .folder:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 200, 0, 0.25);
+            border-color: rgba(255, 200, 0, 0.7);
+            background: rgba(20, 25, 50, 0.85);
+        }
+
+        .folder-icon {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255, 200, 0, 0.6);
+            transition: transform 0.3s;
+        }
+
+        .folder:hover .folder-icon {
+            transform: scale(1.1) rotate(3deg);
+        }
+
+        .folder-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .folder-day {
+            font-size: 0.8rem;
+            color: #aac;
+            opacity: 0.85;
+            background: rgba(255, 200, 0, 0.08);
+            padding: 2px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 4px;
+            border: 1px solid rgba(255, 200, 0, 0.1);
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 10px auto 20px;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px 25px;
+            background: rgba(12, 15, 30, 0.75);
+            border: 1px solid rgba(255, 200, 0, 0.25);
+            border-radius: 50px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            border-color: #ffcc00;
+            box-shadow: 0 0 30px rgba(255, 200, 0, 0.2), inset 0 0 15px rgba(255, 200, 0, 0.05);
+        }
+
+        .search-box::placeholder {
+            color: #8899bb;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 22px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ffcc00;
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #99b0dd;
+            border-top: 1px solid rgba(255, 200, 0, 0.15);
+            letter-spacing: 1px;
+        }
+
+        /* Partículas */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 200, 0, 0.4);
+            border-radius: 50%;
+            animation: floatUp 18s infinite linear;
+            box-shadow: 0 0 15px rgba(255, 200, 0, 0.2);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-100px) rotate(720deg) scale(1.2); opacity: 0; }
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: rgba(12, 18, 40, 0.95);
+            border-radius: 20px;
+            padding: 35px 30px;
+            width: 90%;
+            max-width: 480px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 200, 0, 0.3);
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: #ffcc00;
+            text-shadow: 0 0 25px rgba(255, 200, 0, 0.4);
+        }
+
+        .modal-header p {
+            color: #aac0ee;
+            font-size: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .buy-btn {
+            background: linear-gradient(135deg, #00cc66, #00ff88);
+            color: #001a0a;
+        }
+
+        .sell-btn {
+            background: linear-gradient(135deg, #cc2244, #ff3366);
+            color: #fff;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .buy-btn:hover { box-shadow: 0 0 30px rgba(0, 255, 136, 0.4); }
+        .sell-btn:hover { box-shadow: 0 0 30px rgba(255, 51, 102, 0.4); }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #88aadd;
+            font-size: 1.6rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.5rem; }
+            .header .subtitle { font-size: 1.1rem; }
+            .grid-container { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; padding: 10px; }
+            .folder { padding: 15px 8px; }
+            .folder-icon { font-size: 2.4rem; }
+            .action-buttons { flex-direction: column; gap: 12px; }
+            .modal-content { padding: 25px 18px; }
+            .month-badge { font-size: 1.6rem; padding: 6px 24px; }
+        }
+
+        @media (max-width: 480px) {
+            .grid-container { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+            .header h1 { font-size: 2rem; }
+            .modal-header h2 { font-size: 1.6rem; }
+            .month-badge { font-size: 1.3rem; padding: 4px 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>YESLY ADELAY</h1>
+            <div class="subtitle">⚡ TRADING FUTURISTA ⚡</div>
+            <p>Accede a nuestros documentos de análisis y estrategias de vanguardia</p>
+            <div class="month-badge">🏖️ JULIO 2026</div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="Buscar día o documento..." />
+            <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <div class="grid-container" id="folders-container">
+            <!-- generado por JS: días 1 al 31 de julio -->
+        </div>
+
+        <div class="footer">
+            <p>© 2026 · Yesly Adelay Trading · Sistema Cuántico de Documentos · Julio</p>
+        </div>
+    </div>
+
+    <!-- Modal Buy/Sell -->
+    <div class="modal-overlay" id="action-modal">
+        <div class="modal-content">
+            <button class="close-btn" id="close-modal">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <h2 id="modal-title">Día 1</h2>
+                <p>Selecciona una acción para este documento</p>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn buy-btn" id="buy-btn">Buy</button>
+                <button class="action-btn sell-btn" id="sell-btn">Sell</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- PARTÍCULAS ----------
+            function createParticles() {
+                const container = document.getElementById('particles');
+                const count = 35;
+                for (let i = 0; i < count; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    const size = Math.random() * 6 + 2;
+                    particle.style.width = size + 'px';
+                    particle.style.height = size + 'px';
+                    particle.style.left = Math.random() * 100 + '%';
+                    const colors = [
+                        'rgba(255, 200, 0, 0.6)',
+                        'rgba(255, 150, 0, 0.5)',
+                        'rgba(255, 220, 50, 0.7)',
+                        'rgba(255, 180, 0, 0.5)'
+                    ];
+                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    const duration = Math.random() * 22 + 12;
+                    const delay = Math.random() * 8;
+                    particle.style.animationDuration = duration + 's';
+                    particle.style.animationDelay = delay + 's';
+                    container.appendChild(particle);
+                }
+            }
+
+            // ---------- GENERAR CARPETAS (JULIO: 31 días) ----------
+            function generateJulyFolders() {
+                const container = document.getElementById('folders-container');
+                const days = 31;
+
+                // Iconos veraniegos y variados para Julio
+                const icons = [
+                    'fa-sun', 'fa-cloud-sun', 'fa-umbrella-beach', 'fa-water', 'fa-tree',
+                    'fa-mountain-sun', 'fa-campground', 'fa-fire', 'fa-cocktail', 'fa-ice-cream',
+                    'fa-fan', 'fa-snowflake', 'fa-cloud-bolt', 'fa-meteor', 'fa-star',
+                    'fa-gem', 'fa-crown', 'fa-trophy', 'fa-medal', 'fa-flag-checkered',
+                    'fa-rocket', 'fa-bolt', 'fa-bullseye', 'fa-target', 'fa-crosshairs',
+                    'fa-chart-line', 'fa-arrow-trend-up', 'fa-coins', 'fa-bitcoin-sign',
+                    'fa-wand-magic-sparkles', 'fa-crystal-ball'
+                ];
+
+                // Colores vibrantes veraniegos
+                const colors = [
+                    '#ffcc00', '#ff6600', '#ff3366', '#ff00ff', '#00ffff',
+                    '#66ff33', '#33ccff', '#ff9933', '#ff66b2', '#66ffcc',
+                    '#ffcc33', '#ff8844', '#ff4466', '#cc66ff', '#00ffcc',
+                    '#66ff99', '#ffcc66', '#ff66ff', '#66ccff', '#ff9966',
+                    '#ffdd44', '#ffaa00', '#ff77aa', '#44ff88', '#88ddff',
+                    '#ffaa66', '#ffcc88', '#ffdd99', '#ffbb77', '#ff8844',
+                    '#ffcc55'
+                ];
+
+                for (let d = 1; d <= days; d++) {
+                    const folder = document.createElement('div');
+                    folder.classList.add('folder');
+                    folder.dataset.day = d;
+
+                    const icon = icons[(d - 1) % icons.length];
+                    const color = colors[(d * 7) % colors.length];
+
+                    folder.innerHTML = `
+                        <i class="fas ${icon} folder-icon" style="color: ${color};"></i>
+                        <div class="folder-name">JULIO ${d}</div>
+                        <div class="folder-day">Día ${d}</div>
+                    `;
+
+                    folder.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const day = this.dataset.day;
+                        openActionModal(day);
+                    });
+
+                    container.appendChild(folder);
+                }
+            }
+
+            // ---------- MODAL ----------
+            function openActionModal(day) {
+                const modal = document.getElementById('action-modal');
+                const modalTitle = document.getElementById('modal-title');
+                modalTitle.textContent = `JULIO · Día ${day}`;
+                modal.classList.add('active');
+
+                const buyBtn = document.getElementById('buy-btn');
+                const sellBtn = document.getElementById('sell-btn');
+
+                const newBuy = buyBtn.cloneNode(true);
+                const newSell = sellBtn.cloneNode(true);
+                buyBtn.parentNode.replaceChild(newBuy, buyBtn);
+                sellBtn.parentNode.replaceChild(newSell, sellBtn);
+
+                document.getElementById('buy-btn').addEventListener('click', function() {
+                    window.location.href = `buy/index${day}.html`;
+                });
+
+                document.getElementById('sell-btn').addEventListener('click', function() {
+                    window.location.href = `sell/index${day}.html`;
+                });
+            }
+
+            function closeModal() {
+                document.getElementById('action-modal').classList.remove('active');
+            }
+
+            // ---------- BÚSQUEDA ----------
+            function setupSearch() {
+                const searchBox = document.querySelector('.search-box');
+                searchBox.addEventListener('input', function() {
+                    const term = this.value.toLowerCase().trim();
+                    const folders = document.querySelectorAll('.folder');
+                    folders.forEach(folder => {
+                        const dayText = folder.querySelector('.folder-day')?.textContent?.toLowerCase() || '';
+                        const nameText = folder.querySelector('.folder-name')?.textContent?.toLowerCase() || '';
+                        const match = dayText.includes(term) || nameText.includes(term);
+                        folder.style.display = match ? 'block' : 'none';
+                    });
+                });
+            }
+
+            // ---------- INICIO ----------
+            document.addEventListener('DOMContentLoaded', function() {
+                createParticles();
+                generateJulyFolders();
+                setupSearch();
+
+                document.getElementById('close-modal').addEventListener('click', closeModal);
+                const modal = document.getElementById('action-modal');
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) closeModal();
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') closeModal();
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

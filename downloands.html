@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <title>YESLY ADELAY · Galería Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* ===== RESET Y BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Exo 2', 'Orbitron', sans-serif;
+            background: #03050b;
+            min-height: 100vh;
+            color: #eef5ff;
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        /* ===== FONDOS ===== */
+        .bg-image-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://raw.githubusercontent.com/welding30001994/yeslyface/main/yesly.png?raw=true');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            opacity: 0.30;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(0deg, rgba(0, 255, 255, 0.05) 0px, rgba(0, 255, 255, 0.05) 1px, transparent 1px, transparent 45px),
+                repeating-linear-gradient(90deg, rgba(0, 255, 255, 0.05) 0px, rgba(0, 255, 255, 0.05) 1px, transparent 1px, transparent 45px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .glow-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 40%, rgba(0, 255, 255, 0.06), rgba(0, 0, 0, 0.85));
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 15;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            padding: 30px 20px 15px;
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 10vw, 4rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #00ffff, #ff44e6, #00ffff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 4s ease-in-out infinite alternate;
+            letter-spacing: 4px;
+            text-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .header .subtitle {
+            font-size: clamp(1rem, 4vw, 1.4rem);
+            font-weight: 300;
+            letter-spacing: 6px;
+            color: #b0f0ff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+            margin-top: 5px;
+        }
+
+        .header p {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 12px auto 0;
+            color: #b3d9ff;
+        }
+
+        /* ===== ZONA DE SUBIDA ===== */
+        .upload-area {
+            background: rgba(12, 18, 35, 0.70);
+            backdrop-filter: blur(15px);
+            border: 2px dashed rgba(0, 255, 255, 0.3);
+            border-radius: 32px;
+            padding: 40px 30px;
+            text-align: center;
+            margin: 20px auto 30px;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.1);
+            transform: scale(1.01);
+        }
+
+        .upload-area.dragover {
+            border-color: #ff44e6;
+            box-shadow: 0 0 60px rgba(255, 68, 230, 0.2);
+            background: rgba(20, 28, 55, 0.85);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: #00ffff;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            margin-bottom: 15px;
+        }
+
+        .upload-area h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .upload-area p {
+            color: #aac0ee;
+            font-size: 0.95rem;
+        }
+
+        .upload-area .btn-upload {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 14px 40px;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.3), rgba(255, 68, 230, 0.3));
+            border: 1.5px solid rgba(0, 255, 255, 0.3);
+            border-radius: 60px;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .upload-area .btn-upload:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.5), rgba(255, 68, 230, 0.5));
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
+            transform: scale(1.03);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* ===== CONTADOR Y ACCIONES ===== */
+        .tools-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin: 10px 0 25px;
+            padding: 0 5px;
+        }
+
+        .tools-bar .info {
+            color: #aac0ee;
+            font-size: 0.95rem;
+        }
+
+        .tools-bar .info span {
+            color: #00ffff;
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .tools-bar .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 10px 24px;
+            border: 1.5px solid rgba(0, 255, 255, 0.25);
+            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #b0d0ff;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-action:hover {
+            border-color: #00ffff;
+            color: #fff;
+            background: rgba(0, 255, 255, 0.08);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.05);
+        }
+
+        .btn-action.danger:hover {
+            border-color: #ff3366;
+            color: #ff3366;
+            background: rgba(255, 51, 102, 0.08);
+        }
+
+        .btn-action.success:hover {
+            border-color: #00ff88;
+            color: #00ff88;
+            background: rgba(0, 255, 136, 0.08);
+        }
+
+        .btn-action i {
+            font-size: 1rem;
+        }
+
+        /* ===== GALERÍA ===== */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            padding: 10px 0 30px;
+        }
+
+        @media (min-width: 640px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 25px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 28px;
+            }
+        }
+
+        /* ===== TARJETA DE FOTO ===== */
+        .photo-card {
+            position: relative;
+            background: rgba(12, 18, 35, 0.70);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1.5px solid rgba(0, 255, 255, 0.15);
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            aspect-ratio: 1 / 1;
+            cursor: pointer;
+        }
+
+        .photo-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: #00ffff;
+            box-shadow: 0 15px 50px rgba(0, 255, 255, 0.15);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .photo-card .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .photo-card:hover .overlay {
+            opacity: 1;
+        }
+
+        .photo-card .overlay .info {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            max-width: 60%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .photo-card .overlay .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .photo-card .overlay .actions button {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .photo-card .overlay .actions button:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: #00ffff;
+            color: #00ffff;
+        }
+
+        .photo-card .overlay .actions button.delete:hover {
+            background: rgba(255, 51, 102, 0.2);
+            border-color: #ff3366;
+            color: #ff3366;
+        }
+
+        /* ===== MODAL PREVIEW MEJORADO ===== */
+        .modal-preview {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(30px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            padding: 30px;
+        }
+
+        .modal-preview.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-preview .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-preview img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 20px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: default;
+            user-select: none;
+        }
+
+        .modal-preview.active img {
+            transform: scale(1);
+        }
+
+        .modal-preview .modal-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .modal-preview .modal-controls button {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-preview .modal-controls button:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: #00ffff;
+            color: #00ffff;
+            transform: scale(1.08);
+        }
+
+        .modal-preview .modal-controls button.close-modal-btn:hover {
+            background: rgba(255, 51, 102, 0.2);
+            border-color: #ff3366;
+            color: #ff3366;
+            transform: rotate(90deg);
+        }
+
+        .modal-preview .modal-controls button.download-modal-btn:hover {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+
+        .modal-preview .modal-info {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px;
+            padding: 10px 24px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            max-width: 80%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .modal-preview .modal-info span {
+            color: #00ffff;
+        }
+
+        /* ===== MODAL PROYECTO ===== */
+        .modal-project {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            padding: 30px;
+        }
+
+        .modal-project.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-project .modal-content {
+            background: rgba(12, 18, 40, 0.95);
+            border-radius: 32px;
+            padding: 40px 35px;
+            max-width: 520px;
+            width: 100%;
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+            transform: scale(0.9);
+            transition: transform 0.4s ease;
+            position: relative;
+        }
+
+        .modal-project.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-project .modal-content h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            color: #00ffff;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .modal-project .modal-content .info-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(0, 255, 255, 0.08);
+        }
+
+        .modal-project .modal-content .info-item label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.4);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .modal-project .modal-content .info-item .value {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            word-break: break-all;
+        }
+
+        .modal-project .modal-content .info-item .value a {
+            color: #00ffff;
+            text-decoration: none;
+        }
+
+        .modal-project .modal-content .info-item .value a:hover {
+            text-decoration: underline;
+        }
+
+        .modal-project .modal-content .btn-close-modal {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 68, 230, 0.2));
+            border: 1.5px solid rgba(0, 255, 255, 0.2);
+            border-radius: 60px;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .modal-project .modal-content .btn-close-modal:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.4), rgba(255, 68, 230, 0.4));
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
+        }
+
+        .modal-project .close-modal-x {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #88aadd;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-project .close-modal-x:hover {
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 20px;
+            border-top: 2px solid rgba(0, 255, 255, 0.1);
+            color: #99b0dd;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+        }
+
+        .footer .highlight {
+            color: #00ffff;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.3);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(12, 18, 40, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1.5px solid rgba(0, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 16px 28px;
+            color: #fff;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 500;
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.5s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success {
+            border-color: #00ff88;
+        }
+        .toast.error {
+            border-color: #ff3366;
+        }
+        .toast.info {
+            border-color: #00ffff;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 14px;
+            }
+            .upload-area {
+                padding: 25px 18px;
+            }
+            .upload-icon {
+                font-size: 3rem;
+            }
+            .tools-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .tools-bar .actions {
+                justify-content: center;
+            }
+            .modal-preview img {
+                max-width: 100%;
+                max-height: 70vh;
+            }
+            .modal-preview .modal-controls {
+                top: 10px;
+                right: 10px;
+                gap: 8px;
+            }
+            .modal-preview .modal-controls button {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            .modal-preview .modal-info {
+                font-size: 0.65rem;
+                padding: 8px 16px;
+                bottom: 15px;
+            }
+            .photo-card .overlay {
+                opacity: 1;
+                padding: 10px;
+            }
+            .modal-project .modal-content {
+                padding: 25px 18px;
+            }
+            .modal-project .modal-content h2 {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+                gap: 10px;
+            }
+            .photo-card {
+                border-radius: 16px;
+            }
+            .btn-action {
+                padding: 8px 14px;
+                font-size: 0.7rem;
+            }
+            .upload-area .btn-upload {
+                padding: 10px 20px;
+                font-size: 0.75rem;
+            }
+            .toast {
+                font-size: 0.8rem;
+                padding: 12px 18px;
+                bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== CAPAS DE FONDO ===== -->
+    <div class="bg-image-layer"></div>
+    <div class="cyber-grid"></div>
+    <div class="glow-overlay"></div>
+    <div id="particles-js"></div>
+
+    <!-- ===== CONTENIDO ===== -->
+    <div class="container">
+        <header class="header">
+            <h1>YESLY ADELAY</h1>
+            <div class="subtitle">📸 GALERÍA PRO</div>
+            <p>Sube, almacena y gestiona tus imágenes en un solo lugar</p>
+        </header>
+
+        <!-- ZONA DE SUBIDA -->
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <h3>Sube tus fotos</h3>
+            <p>Arrastra y suelta imágenes o haz clic para seleccionar</p>
+            <button class="btn-upload" id="uploadBtn">
+                <i class="fas fa-plus-circle"></i> Seleccionar archivos
+            </button>
+            <input type="file" id="fileInput" multiple accept="image/*" />
+        </div>
+
+        <!-- BARRA DE HERRAMIENTAS -->
+        <div class="tools-bar">
+            <div class="info">
+                <i class="fas fa-images"></i> <span id="photoCount">0</span> fotos · <span id="storageSize">0 KB</span>
+            </div>
+            <div class="actions">
+                <button class="btn-action" id="downloadAllBtn">
+                    <i class="fas fa-download"></i> Descargar todas
+                </button>
+                <button class="btn-action success" id="exportProjectBtn">
+                    <i class="fas fa-save"></i> Guardar Proyecto
+                </button>
+                <button class="btn-action" id="viewProjectBtn">
+                    <i class="fas fa-link"></i> Ver Proyecto
+                </button>
+                <button class="btn-action danger" id="clearAllBtn">
+                    <i class="fas fa-trash-alt"></i> Limpiar todo
+                </button>
+            </div>
+        </div>
+
+        <!-- GALERÍA -->
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- Generado por JavaScript -->
+        </div>
+
+        <footer class="footer">
+            <p>© 2026 · <span class="highlight">Yesly Adelay</span> · Galería Pro · Almacenamiento Local</p>
+        </footer>
+    </div>
+
+    <!-- ===== MODAL PREVIEW MEJORADO ===== -->
+    <div class="modal-preview" id="modalPreview">
+        <div class="modal-content">
+            <div class="modal-controls">
+                <button class="download-modal-btn" id="downloadModalBtn" title="Descargar imagen">
+                    <i class="fas fa-download"></i>
+                </button>
+                <button class="close-modal-btn" id="closeModalBtn" title="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <img id="previewImage" src="" alt="Vista previa" />
+            <div class="modal-info" id="modalInfo">
+                <i class="fas fa-image"></i> <span id="modalFileName">imagen</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PROYECTO -->
+    <div class="modal-project" id="modalProject">
+        <div class="modal-content">
+            <button class="close-modal-x" id="closeProjectModal"><i class="fas fa-times"></i></button>
+            <h2>📁 PROYECTO GUARDADO</h2>
+            <div class="info-item">
+                <label>📊 Total de imágenes</label>
+                <div class="value" id="projectTotal">0</div>
+            </div>
+            <div class="info-item">
+                <label>📦 Tamaño total</label>
+                <div class="value" id="projectSize">0 KB</div>
+            </div>
+            <div class="info-item">
+                <label>🔗 Enlace del proyecto</label>
+                <div class="value" id="projectLink">
+                    <span style="color:rgba(255,255,255,0.3);">Genera el proyecto para ver el enlace</span>
+                </div>
+            </div>
+            <button class="btn-close-modal" id="closeProjectBtn">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== PARTICULAS ===== -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js">
+    </script>
+    <script>
+        (function() {
+            'use strict';
+
+            // ===== PARTICULAS =====
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 60, density: { enable: true, value_area: 800 } },
+                    color: { value: "#00ffff" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.3, random: true },
+                    size: { value: 2, random: true },
+                    line_linked: { enable: true, distance: 150, color: "#00ffff", opacity: 0.15, width: 1 },
+                    move: { enable: true, speed: 0.8, direction: "none", random: true, out_mode: "out" }
+                },
+                interactivity: {
+                    events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } }
+                },
+                retina_detect: true
+            });
+
+            // ===== ESTADO =====
+            let photos = [];
+            let nextId = 1;
+            let projectId = null;
+            let currentModalPhotoId = null;
+
+            // ===== DOM =====
+            const gallery = document.getElementById('galleryGrid');
+            const fileInput = document.getElementById('fileInput');
+            const uploadArea = document.getElementById('uploadArea');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const photoCount = document.getElementById('photoCount');
+            const storageSize = document.getElementById('storageSize');
+            const downloadAllBtn = document.getElementById('downloadAllBtn');
+            const clearAllBtn = document.getElementById('clearAllBtn');
+            const exportProjectBtn = document.getElementById('exportProjectBtn');
+            const viewProjectBtn = document.getElementById('viewProjectBtn');
+
+            const modalPreview = document.getElementById('modalPreview');
+            const previewImage = document.getElementById('previewImage');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const downloadModalBtn = document.getElementById('downloadModalBtn');
+            const modalFileName = document.getElementById('modalFileName');
+
+            const modalProject = document.getElementById('modalProject');
+            const closeProjectModal = document.getElementById('closeProjectModal');
+            const closeProjectBtn = document.getElementById('closeProjectBtn');
+            const projectTotal = document.getElementById('projectTotal');
+            const projectSize = document.getElementById('projectSize');
+            const projectLink = document.getElementById('projectLink');
+
+            const toast = document.getElementById('toast');
+
+            // ===== TOAST =====
+            let toastTimeout;
+
+            function showToast(message, type = 'info') {
+                clearTimeout(toastTimeout);
+                toast.textContent = message;
+                toast.className = 'toast ' + type;
+                toast.classList.add('show');
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3500);
+            }
+
+            // ===== CARGAR DESDE LOCALSTORAGE =====
+            function loadFromStorage() {
+                try {
+                    const saved = localStorage.getItem('yesly_photos_pro');
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        photos = parsed;
+                        if (photos.length > 0) {
+                            nextId = Math.max(...photos.map(p => p.id)) + 1;
+                        }
+                    }
+                    const savedProject = localStorage.getItem('yesly_project_id');
+                    if (savedProject) {
+                        projectId = savedProject;
+                    }
+                } catch (e) {
+                    console.warn('Error cargando datos:', e);
+                }
+                renderGallery();
+                updateStats();
+            }
+
+            // ===== GUARDAR EN LOCALSTORAGE =====
+            function saveToStorage() {
+                try {
+                    localStorage.setItem('yesly_photos_pro', JSON.stringify(photos));
+                    if (projectId) {
+                        localStorage.setItem('yesly_project_id', projectId);
+                    }
+                } catch (e) {
+                    console.warn('Error guardando datos:', e);
+                }
+                updateStats();
+            }
+
+            // ===== ACTUALIZAR ESTADÍSTICAS =====
+            function updateStats() {
+                photoCount.textContent = photos.length;
+                let totalBytes = 0;
+                photos.forEach(p => {
+                    const base64 = p.data.split(',')[1];
+                    if (base64) {
+                        totalBytes += Math.ceil((base64.length * 3) / 4);
+                    }
+                });
+                if (totalBytes < 1024) {
+                    storageSize.textContent = totalBytes + ' B';
+                } else if (totalBytes < 1048576) {
+                    storageSize.textContent = (totalBytes / 1024).toFixed(1) + ' KB';
+                } else {
+                    storageSize.textContent = (totalBytes / 1048576).toFixed(1) + ' MB';
+                }
+            }
+
+            // ===== GENERAR ID DE PROYECTO =====
+            function generateProjectId() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                let id = '';
+                for (let i = 0; i < 8; i++) {
+                    id += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return id;
+            }
+
+            // ===== RENDERIZAR GALERÍA =====
+            function renderGallery() {
+                gallery.innerHTML = '';
+
+                if (photos.length === 0) {
+                    gallery.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-image"></i>
+                            <h3>No hay fotos todavía</h3>
+                            <p>Sube tus primeras imágenes arrastrando o con el botón</p>
+                        </div>
+                    `;
+                } else {
+                    photos.forEach(photo => {
+                        const card = document.createElement('div');
+                        card.className = 'photo-card';
+                        card.innerHTML = `
+                            <img src="${photo.data}" alt="${photo.name}" loading="lazy" />
+                            <div class="overlay">
+                                <span class="info">${photo.name}</span>
+                                <div class="actions">
+                                    <button class="download" title="Descargar" data-id="${photo.id}">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button class="delete" title="Eliminar" data-id="${photo.id}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+
+                        // Click en la imagen para abrir preview expandido
+                        card.querySelector('img').addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            openPreview(photo.id);
+                        });
+
+                        card.querySelector('.download').addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            downloadPhoto(photo.id);
+                        });
+
+                        card.querySelector('.delete').addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            deletePhoto(photo.id);
+                        });
+
+                        gallery.appendChild(card);
+                    });
+                }
+                updateStats();
+            }
+
+            // ===== SUBIR FOTOS =====
+            function uploadFiles(files) {
+                const validFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
+                if (validFiles.length === 0) {
+                    showToast('⚠️ Solo se permiten archivos de imagen.', 'error');
+                    return;
+                }
+
+                let loaded = 0;
+                validFiles.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        photos.push({
+                            id: nextId++,
+                            name: file.name,
+                            data: e.target.result,
+                            size: file.size,
+                            type: file.type,
+                            date: new Date().toISOString()
+                        });
+                        loaded++;
+                        if (loaded === validFiles.length) {
+                            saveToStorage();
+                            renderGallery();
+                            showToast(`✅ ${validFiles.length} imágenes subidas correctamente`, 'success');
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // ===== MANEJAR SUBIDA =====
+            uploadBtn.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    uploadFiles(this.files);
+                    this.value = '';
+                }
+            });
+
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) {
+                    uploadFiles(e.dataTransfer.files);
+                }
+            });
+
+            uploadArea.addEventListener('click', function(e) {
+                if (e.target === uploadArea || e.target.closest('.upload-icon') || e.target.closest('h3') || e
+                    .target.closest('p')) {
+                    fileInput.click();
+                }
+            });
+
+            // ===== ELIMINAR FOTO =====
+            function deletePhoto(id) {
+                if (confirm('¿Eliminar esta foto?')) {
+                    photos = photos.filter(p => p.id !== id);
+                    saveToStorage();
+                    renderGallery();
+                    showToast('🗑️ Foto eliminada', 'info');
+                }
+            }
+
+            // ===== DESCARGAR FOTO =====
+            function downloadPhoto(id) {
+                const photo = photos.find(p => p.id === id);
+                if (photo) {
+                    const link = document.createElement('a');
+                    link.download = photo.name;
+                    link.href = photo.data;
+                    link.click();
+                    showToast(`📥 Descargando: ${photo.name}`, 'success');
+                }
+            }
+
+            // ===== PREVIEW EXPANDIDO CON BOTÓN DE DESCARGA =====
+            function openPreview(id) {
+                const photo = photos.find(p => p.id === id);
+                if (!photo) return;
+
+                currentModalPhotoId = id;
+                previewImage.src = photo.data;
+                modalFileName.textContent = photo.name;
+
+                // Configurar el botón de descarga en el modal
+                downloadModalBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    downloadPhoto(id);
+                };
+
+                modalPreview.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closePreviewFn() {
+                modalPreview.classList.remove('active');
+                document.body.style.overflow = '';
+                currentModalPhotoId = null;
+            }
+
+            // ===== EVENTOS DEL MODAL PREVIEW =====
+            closeModalBtn.addEventListener('click', closePreviewFn);
+            modalPreview.addEventListener('click', function(e) {
+                if (e.target === modalPreview || e.target === modalPreview.querySelector('.modal-content')) {
+                    closePreviewFn();
+                }
+            });
+
+            // Tecla ESC para cerrar
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closePreviewFn();
+                    closeProjectModalFn();
+                }
+            });
+
+            // ===== DESCARGA TODAS =====
+            downloadAllBtn.addEventListener('click', function() {
+                if (photos.length === 0) {
+                    showToast('⚠️ No hay fotos para descargar.', 'error');
+                    return;
+                }
+                photos.forEach((photo, index) => {
+                    setTimeout(() => {
+                        const link = document.createElement('a');
+                        link.download = photo.name;
+                        link.href = photo.data;
+                        link.click();
+                    }, index * 300);
+                });
+                showToast(`📥 Descargando ${photos.length} imágenes...`, 'success');
+            });
+
+            // ===== LIMPIAR TODO =====
+            clearAllBtn.addEventListener('click', function() {
+                if (photos.length === 0) return;
+                if (confirm('⚠️ ¿Eliminar todas las fotos?')) {
+                    photos = [];
+                    projectId = null;
+                    localStorage.removeItem('yesly_photos_pro');
+                    localStorage.removeItem('yesly_project_id');
+                    renderGallery();
+                    showToast('🗑️ Todas las fotos eliminadas', 'info');
+                }
+            });
+
+            // ===== EXPORTAR PROYECTO =====
+            function exportProject() {
+                if (photos.length === 0) {
+                    showToast('⚠️ No hay fotos para guardar.', 'error');
+                    return;
+                }
+
+                if (!projectId) {
+                    projectId = generateProjectId();
+                    localStorage.setItem('yesly_project_id', projectId);
+                }
+
+                // Generar HTML con todas las imágenes embebidas Y funcionalidad de clic para expandir
+                let htmlContent = `<!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Yesly Adelay · Proyecto ${projectId}</title>
+            <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+            <style>
+                * { margin:0; padding:0; box-sizing:border-box; }
+                body { 
+                    background: #03050b; 
+                    color: #fff; 
+                    font-family: 'Exo 2', sans-serif; 
+                    padding: 30px; 
+                    min-height: 100vh;
+                }
+                .header {
+                    text-align: center;
+                    padding: 30px 20px;
+                }
+                .header h1 {
+                    font-family: 'Orbitron', sans-serif;
+                    font-size: 2.5rem;
+                    background: linear-gradient(135deg, #00ffff, #ff44e6);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    letter-spacing: 3px;
+                }
+                .header .sub {
+                    color: rgba(255,255,255,0.4);
+                    letter-spacing: 4px;
+                    font-size: 0.8rem;
+                    margin-top: 5px;
+                }
+                .header .project-id {
+                    display: inline-block;
+                    margin-top: 10px;
+                    padding: 6px 20px;
+                    border: 1px solid rgba(0,255,255,0.2);
+                    border-radius: 30px;
+                    color: #00ffff;
+                    font-family: 'Orbitron', sans-serif;
+                    font-size: 0.7rem;
+                    letter-spacing: 1px;
+                }
+                .grid { 
+                    display: grid; 
+                    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+                    gap: 20px; 
+                    max-width: 1400px; 
+                    margin: 20px auto;
+                }
+                .card {
+                    position: relative;
+                    background: rgba(12,18,35,0.7);
+                    border-radius: 16px;
+                    overflow: hidden;
+                    border: 1px solid rgba(0,255,255,0.15);
+                    aspect-ratio: 1/1;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                }
+                .card:hover {
+                    transform: scale(1.03);
+                    border-color: #00ffff;
+                    box-shadow: 0 0 30px rgba(0,255,255,0.1);
+                }
+                .card img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    display: block;
+                }
+                .card .name {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    padding: 10px;
+                    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+                    font-size: 0.7rem;
+                    color: rgba(255,255,255,0.7);
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                }
+                .card:hover .name {
+                    opacity: 1;
+                }
+                .footer {
+                    text-align: center;
+                    margin-top: 40px;
+                    color: rgba(255,255,255,0.2);
+                    font-size: 0.7rem;
+                    letter-spacing: 2px;
+                    border-top: 1px solid rgba(0,255,255,0.08);
+                    padding-top: 30px;
+                }
+                .footer .highlight {
+                    color: #00ffff;
+                }
+                .total-badge {
+                    text-align: center;
+                    margin: 10px 0;
+                    color: rgba(255,255,255,0.3);
+                    font-size: 0.85rem;
+                }
+                .total-badge span {
+                    color: #00ffff;
+                }
+                /* MODAL PREVIEW PARA EL HTML EXPORTADO */
+                .modal-preview {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.95);
+                    backdrop-filter: blur(30px);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 1000;
+                    opacity: 0;
+                    visibility: hidden;
+                    transition: all 0.4s ease;
+                    padding: 30px;
+                }
+                .modal-preview.active {
+                    opacity: 1;
+                    visibility: visible;
+                }
+                .modal-preview .modal-content {
+                    position: relative;
+                    max-width: 90%;
+                    max-height: 90vh;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+                .modal-preview img {
+                    max-width: 100%;
+                    max-height: 80vh;
+                    border-radius: 20px;
+                    box-shadow: 0 30px 80px rgba(0,0,0,0.9);
+                    border: 2px solid rgba(0,255,255,0.2);
+                    transform: scale(0.9);
+                    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    cursor: default;
+                }
+                .modal-preview.active img {
+                    transform: scale(1);
+                }
+                .modal-preview .modal-controls {
+                    position: absolute;
+                    top: 20px;
+                    right: 20px;
+                    display: flex;
+                    gap: 12px;
+                    z-index: 10;
+                }
+                .modal-preview .modal-controls button {
+                    background: rgba(0,0,0,0.6);
+                    border: 1.5px solid rgba(255,255,255,0.15);
+                    border-radius: 50%;
+                    width: 48px;
+                    height: 48px;
+                    color: white;
+                    font-size: 1.2rem;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    backdrop-filter: blur(10px);
+                }
+                .modal-preview .modal-controls button:hover {
+                    background: rgba(0,255,255,0.2);
+                    border-color: #00ffff;
+                    color: #00ffff;
+                    transform: scale(1.08);
+                }
+                .modal-preview .modal-controls button.close-modal-btn:hover {
+                    background: rgba(255,51,102,0.2);
+                    border-color: #ff3366;
+                    color: #ff3366;
+                    transform: rotate(90deg);
+                }
+                .modal-preview .modal-controls button.download-modal-btn:hover {
+                    background: rgba(0,255,136,0.2);
+                    border-color: #00ff88;
+                    color: #00ff88;
+                }
+                .modal-preview .modal-info {
+                    position: absolute;
+                    bottom: 30px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(0,0,0,0.6);
+                    backdrop-filter: blur(15px);
+                    border: 1px solid rgba(255,255,255,0.08);
+                    border-radius: 40px;
+                    padding: 10px 24px;
+                    color: rgba(255,255,255,0.6);
+                    font-size: 0.8rem;
+                    letter-spacing: 1px;
+                    white-space: nowrap;
+                    max-width: 80%;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .modal-preview .modal-info span {
+                    color: #00ffff;
+                }
+                @media (max-width: 600px) {
+                    .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+                    .header h1 { font-size: 1.8rem; }
+                    .modal-preview .modal-controls button { width: 40px; height: 40px; font-size: 1rem; }
+                    .modal-preview .modal-info { font-size: 0.65rem; padding: 8px 16px; bottom: 15px; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>📸 YESLY ADELAY</h1>
+                <div class="sub">GALERÍA CUÁNTICA · PROYECTO</div>
+                <div class="project-id">🔗 ID: ${projectId}</div>
+            </div>
+            <div class="total-badge">📊 <span>${photos.length}</span> imágenes · ✅ Proyecto completo</div>
+            <div class="grid" id="galleryGrid">`;
+
+                // Generar las tarjetas con IDs únicos
+                photos.forEach((photo, index) => {
+                    const photoId = 'img_' + index;
+                    htmlContent += `
+                        <div class="card" onclick="openPreview('${photoId}')">
+                            <img id="${photoId}" src="${photo.data}" alt="${photo.name}" loading="lazy" />
+                            <div class="name">${photo.name}</div>
+                        </div>`;
+                });
+
+                const totalSize = photos.reduce((acc, p) => {
+                    const base64 = p.data.split(',')[1];
+                    return acc + (base64 ? Math.ceil((base64.length * 3) / 4) : 0);
+                }, 0);
+
+                const sizeStr = totalSize < 1024 ? totalSize + ' B' :
+                    totalSize < 1048576 ? (totalSize / 1024).toFixed(1) + ' KB' :
+                    (totalSize / 1048576).toFixed(1) + ' MB';
+
+                htmlContent += `
+            </div>
+            <div class="footer">
+                <p>© 2026 · <span class="highlight">Yesly Adelay</span> · Proyecto ${projectId} · ${sizeStr}</p>
+                <p style="margin-top:5px;opacity:0.4;">Generado desde Galería Pro · ${new Date().toLocaleDateString()}</p>
+            </div>
+
+            <!-- MODAL PREVIEW -->
+            <div class="modal-preview" id="modalPreview">
+                <div class="modal-content">
+                    <div class="modal-controls">
+                        <button class="download-modal-btn" id="downloadModalBtn" title="Descargar imagen">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="close-modal-btn" id="closeModalBtn" title="Cerrar">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <img id="previewImage" src="" alt="Vista previa" />
+                    <div class="modal-info">
+                        <i class="fas fa-image"></i> <span id="modalFileName">imagen</span>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                // ===== MODAL PREVIEW PARA EL HTML EXPORTADO =====
+                let currentImageData = '';
+                let currentImageName = '';
+
+                function openPreview(imageId) {
+                    const img = document.getElementById(imageId);
+                    if (!img) return;
+                    currentImageData = img.src;
+                    currentImageName = img.alt || 'imagen';
+                    const modal = document.getElementById('modalPreview');
+                    const previewImg = document.getElementById('previewImage');
+                    const fileName = document.getElementById('modalFileName');
+                    previewImg.src = currentImageData;
+                    fileName.textContent = currentImageName;
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                function closePreview() {
+                    document.getElementById('modalPreview').classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+
+                function downloadCurrentImage() {
+                    if (currentImageData) {
+                        const link = document.createElement('a');
+                        link.download = currentImageName || 'imagen';
+                        link.href = currentImageData;
+                        link.click();
+                    }
+                }
+
+                document.getElementById('closeModalBtn').addEventListener('click', closePreview);
+                document.getElementById('downloadModalBtn').addEventListener('click', downloadCurrentImage);
+                document.getElementById('modalPreview').addEventListener('click', function(e) {
+                    if (e.target === this || e.target === this.querySelector('.modal-content')) {
+                        closePreview();
+                    }
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') closePreview();
+                });
+            <\/script>
+        </body>
+        </html>`;
+
+                // Descargar HTML
+                const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `proyecto_yesly_${projectId}.html`;
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+
+                // Guardar el proyecto en localStorage como backup
+                localStorage.setItem('yesly_project_html', htmlContent);
+
+                showToast(`✅ Proyecto guardado como proyecto_yesly_${projectId}.html`, 'success');
+                updateProjectInfo();
+            }
+
+            // ===== VER PROYECTO =====
+            function viewProject() {
+                if (photos.length === 0) {
+                    showToast('⚠️ No hay fotos para mostrar en el proyecto.', 'error');
+                    return;
+                }
+
+                if (!projectId) {
+                    projectId = generateProjectId();
+                    localStorage.setItem('yesly_project_id', projectId);
+                }
+
+                updateProjectInfo();
+                modalProject.classList.add('active');
+            }
+
+            // ===== ACTUALIZAR INFO DEL PROYECTO =====
+            function updateProjectInfo() {
+                projectTotal.textContent = photos.length;
+
+                let totalBytes = 0;
+                photos.forEach(p => {
+                    const base64 = p.data.split(',')[1];
+                    if (base64) {
+                        totalBytes += Math.ceil((base64.length * 3) / 4);
+                    }
+                });
+                const sizeStr = totalBytes < 1024 ? totalBytes + ' B' :
+                    totalBytes < 1048576 ? (totalBytes / 1024).toFixed(1) + ' KB' :
+                    (totalBytes / 1048576).toFixed(1) + ' MB';
+                projectSize.textContent = sizeStr;
+
+                if (projectId) {
+                    const savedHtml = localStorage.getItem('yesly_project_html');
+                    if (savedHtml) {
+                        const blob = new Blob([savedHtml], { type: 'text/html' });
+                        const url = URL.createObjectURL(blob);
+                        projectLink.innerHTML = `<a href="${url}" target="_blank">proyecto_yesly_${projectId}.html</a>
+                        <span style="display:block;font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:4px;">Archivo guardado localmente</span>`;
+                    } else {
+                        projectLink.innerHTML = `
+                        <span style="color:#00ff88;">ID: ${projectId}</span>
+                        <span style="display:block;font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:4px;">
+                            <i class="fas fa-info-circle"></i> Guarda el proyecto para generar el enlace
+                        </span>`;
+                    }
+                } else {
+                    projectLink.innerHTML =
+                        `<span style="color:rgba(255,255,255,0.3);">Genera el proyecto para ver el enlace</span>`;
+                }
+            }
+
+            // ===== EVENTOS DEL MODAL PROYECTO =====
+            function closeProjectModalFn() {
+                modalProject.classList.remove('active');
+            }
+
+            closeProjectModal.addEventListener('click', closeProjectModalFn);
+            closeProjectBtn.addEventListener('click', closeProjectModalFn);
+            modalProject.addEventListener('click', function(e) {
+                if (e.target === this) closeProjectModalFn();
+            });
+
+            // ===== EVENTOS PRINCIPALES =====
+            exportProjectBtn.addEventListener('click', exportProject);
+            viewProjectBtn.addEventListener('click', viewProject);
+
+            // ===== INICIO =====
+            loadFromStorage();
+
+        })();
+    </script>
+</body>
+</html>

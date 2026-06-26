@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yesly Adelay · Señal Trading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: url('https://raw.githubusercontent.com/welding30001994/heydin-kayser-vip/refs/heads/main/YESLY.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.70);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 0 40px rgba(0, 255, 200, 0.7);
+            background: linear-gradient(135deg, #00ffcc, #00ccff, #00ffcc);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 4s ease-in-out infinite alternate;
+            letter-spacing: 4px;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .header .subtitle {
+            font-size: 1.6rem;
+            font-weight: 300;
+            letter-spacing: 5px;
+            color: #88ffdd;
+            text-shadow: 0 0 20px rgba(0, 255, 200, 0.4);
+            margin-top: -5px;
+        }
+
+        /* Mensaje de señal de trading */
+        .signal-message {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-left: 6px solid #00ffcc;
+            border-radius: 20px;
+            padding: 32px 28px;
+            margin: 40px auto 0;
+            max-width: 800px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(0, 255, 200, 0.25);
+        }
+
+        .signal-message p {
+            font-size: 1.5rem;
+            font-weight: 400;
+            letter-spacing: 1.5px;
+            color: #e0f0ff;
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        .signal-message i {
+            color: #00ffcc;
+            margin-right: 14px;
+            font-size: 1.8rem;
+        }
+
+        .highlight-buy {
+            color: #66ffaa;
+            font-weight: 700;
+            text-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
+            display: inline-block;
+            padding: 0 8px;
+        }
+
+        .highlight-sell {
+            color: #ff6688;
+            font-weight: 700;
+            text-shadow: 0 0 25px rgba(255, 51, 102, 0.6);
+            display: inline-block;
+            padding: 0 8px;
+        }
+
+        .footer {
+            margin-top: 50px;
+            font-size: 0.9rem;
+            color: #99b0dd;
+            letter-spacing: 1px;
+            border-top: 1px solid rgba(0, 255, 200, 0.15);
+            padding-top: 25px;
+        }
+
+        /* Partículas sutiles de fondo */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(0, 255, 200, 0.3);
+            border-radius: 50%;
+            animation: floatUp 20s infinite linear;
+            box-shadow: 0 0 15px rgba(0, 255, 200, 0.15);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 0.7; }
+            100% { transform: translateY(-100px) rotate(720deg) scale(1.2); opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.8rem; }
+            .header .subtitle { font-size: 1.2rem; }
+            .signal-message p { font-size: 1.2rem; }
+            .signal-message { padding: 24px 18px; }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 { font-size: 2.2rem; }
+            .header .subtitle { font-size: 1rem; }
+            .signal-message p { font-size: 1rem; }
+            .signal-message i { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Partículas -->
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>YESLY ADELAY</h1>
+            <div class="subtitle">⚡ TRADING FUTURISTA ⚡</div>
+        </div>
+
+        <!-- Mensaje de señal de trading -->
+        <div class="signal-message">
+            <p>
+                <i class="fas fa-bullhorn"></i>
+                HOLA, LA SEÑAL DE TRADING YA ESTÁ COMPARTIDA.<br />
+                SI NO VES NADA AQUÍ ES PORQUE NO ESTÁS EN EL LUGAR CORRECTO.<br />
+                <span class="highlight-buy">BUY</span> O 
+                <span class="highlight-sell">SELL</span>
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 · Yesly Adelay Trading · Señal en vivo</p>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Partículas decorativas
+            function createParticles() {
+                const container = document.getElementById('particles');
+                const count = 25;
+                for (let i = 0; i < count; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    const size = Math.random() * 5 + 2;
+                    particle.style.width = size + 'px';
+                    particle.style.height = size + 'px';
+                    particle.style.left = Math.random() * 100 + '%';
+                    const colors = [
+                        'rgba(0, 255, 200, 0.5)',
+                        'rgba(0, 200, 255, 0.4)',
+                        'rgba(0, 255, 220, 0.6)',
+                        'rgba(0, 220, 255, 0.4)'
+                    ];
+                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    const duration = Math.random() * 20 + 14;
+                    const delay = Math.random() * 10;
+                    particle.style.animationDuration = duration + 's';
+                    particle.style.animationDelay = delay + 's';
+                    container.appendChild(particle);
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', createParticles);
+        })();
+    </script>
+</body>
+</html>
