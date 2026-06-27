@@ -22,7 +22,6 @@
             color: #eef5ff;
         }
 
-        /* FONDO FUTURISTA CON IMAGEN YESLYFACE (actualizada) */
         .bg-image-layer {
             position: fixed;
             top: 0;
@@ -44,7 +43,6 @@
             100% { transform: scale(1.12); opacity: 0.38; }
         }
 
-        /* OVERLAY NEÓN + GRID FUTURISTA */
         .cyber-grid {
             position: fixed;
             top: 0;
@@ -75,7 +73,6 @@
             pointer-events: none;
         }
 
-        /* ANILLOS NEÓN FLOTANTES */
         .floating-rings {
             position: fixed;
             top: 0;
@@ -128,7 +125,6 @@
             100% { transform: rotate(360deg) scale(1); }
         }
 
-        /* PARTICULAS */
         #particles-js {
             position: fixed;
             top: 0;
@@ -139,7 +135,6 @@
             pointer-events: none;
         }
 
-        /* LINEAS ESCANEO */
         .scan-line {
             position: fixed;
             top: 0;
@@ -159,7 +154,6 @@
             100% { top: 100%; opacity: 0; }
         }
 
-        /* CONTENIDO PRINCIPAL */
         .content {
             position: relative;
             z-index: 20;
@@ -169,7 +163,6 @@
             flex-direction: column;
         }
 
-        /* HEADER GLASS */
         .glass-header {
             background: rgba(3, 5, 12, 0.85);
             backdrop-filter: blur(25px);
@@ -256,7 +249,6 @@
             }
         }
 
-        /* TARJETA PRINCIPAL FUTURISTA */
         .card-container {
             display: flex;
             justify-content: center;
@@ -291,7 +283,6 @@
             }
         }
 
-        /* HERO NEÓN */
         .hero-neon {
             background: linear-gradient(135deg, rgba(0, 20, 50, 0.9), rgba(15, 5, 35, 0.95));
             padding: 2.8rem 2rem 2rem;
@@ -434,7 +425,6 @@
             50% { opacity: 0.2; }
         }
 
-        /* CONTENIDO DE LA TARJETA */
         .card-body {
             padding: 2rem 2rem 2.5rem;
         }
@@ -534,7 +524,6 @@
             margin-right: 6px;
         }
 
-        /* BOTÓN DE DESCARGA NEÓN */
         .download-area {
             text-align: center;
             margin: 2rem 0 1rem;
@@ -604,9 +593,9 @@
             border: 1px solid rgba(0, 255, 255, 0.2);
             font-weight: 600;
             transition: 0.3s;
+            max-width: 100%;
         }
 
-        /* FEATURES FUTURISTAS */
         .features {
             display: flex;
             flex-wrap: wrap;
@@ -643,7 +632,18 @@
             filter: drop-shadow(0 0 6px cyan);
         }
 
-        /* FOOTER */
+        .drive-link {
+            color: #0cf;
+            text-decoration: none;
+            font-weight: 700;
+            border-bottom: 1px dashed rgba(0, 255, 255, 0.4);
+            transition: 0.3s;
+        }
+        .drive-link:hover {
+            color: #ff44e6;
+            border-bottom-color: #ff44e6;
+        }
+
         footer {
             background: rgba(3, 5, 12, 0.95);
             backdrop-filter: blur(20px);
@@ -722,6 +722,7 @@
                             <i class="fas fa-gem" style="color: #ff44e6;"></i> Interfaz premium, señales exclusivas y alto rendimiento.<br>
                             <i class="fas fa-android" style="color: #0cf;"></i> Compatible con Android 7.0+ · Instalación rápida y segura.</p>
                             <p style="font-size:0.8rem; color: #aaffdd; margin-top: 10px;"><i class="fas fa-info-circle"></i> El archivo <strong>YESLY-ADELAY.apk</strong> debe estar ubicado en la MISMA carpeta que este archivo para que la descarga funcione automáticamente.</p>
+                            <p style="font-size:0.85rem; color: #ffd966; margin-top: 8px;"><i class="fas fa-cloud-download-alt"></i> Si no aparece, puedes descargarlo desde: <a href="https://drive.google.com/file/d/1xN6mfM8lQYsbnwYgSY0-iisN7sLsUBUU/view?usp=drive_link" target="_blank" class="drive-link">Google Drive</a></p>
                         </div>
                     </div>
 
@@ -742,7 +743,7 @@
                 </div>
                 <footer>
                     <i class="fas fa-crown"></i> YESLY ADELAY TRADING · Todos los derechos reservados · App privada para miembros <br>
-                    Si la descarga no inicia, verifica que el archivo <strong style="color:cyan;">"YESLY-ADELAY.apk"</strong> esté en la misma carpeta.
+                    Si la descarga no inicia, verifica que el archivo <strong style="color:cyan;">"YESLY-ADELAY.apk"</strong> esté en la misma carpeta o usa el enlace a Google Drive.
                 </footer>
             </div>
         </div>
@@ -750,7 +751,6 @@
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // PARTICULAS EFECTO FUTURISTA
         particlesJS('particles-js', {
             particles: {
                 number: { value: 80, density: { enable: true, value_area: 700 } },
@@ -770,9 +770,9 @@
             retina_detect: true
         });
 
-        // LOGICA DE DESCARGA APK - NOMBRE EXACTO: YESLY-ADELAY.apk
         (function() {
             const APK_FILENAME = "YESLY-ADELAY.apk";
+            const DRIVE_URL = "https://drive.google.com/file/d/1xN6mfM8lQYsbnwYgSY0-iisN7sLsUBUU/view?usp=drive_link";
             const statusDiv = document.getElementById("statusMsg");
             const downloadBtn = document.getElementById("downloadBtn");
 
@@ -797,10 +797,10 @@
                     downloadBtn.style.opacity = "1";
                     downloadBtn.style.cursor = "pointer";
                 } else {
-                    statusDiv.innerHTML = "<i class='fas fa-exclamation-triangle'></i> No se encontró el archivo 'YESLY-ADELAY.apk' en la carpeta actual. Colócalo junto al index.html e intenta de nuevo.";
-                    statusDiv.style.color = "#FFB4A2";
-                    statusDiv.style.background = "rgba(80, 30, 30, 0.6)";
-                    statusDiv.style.borderColor = "#ff6666";
+                    statusDiv.innerHTML = `<i class='fas fa-exclamation-triangle'></i> No se encontró el archivo local. <a href="${DRIVE_URL}" target="_blank" style="color:#FFD966; text-decoration:underline;">Descargar desde Google Drive</a>`;
+                    statusDiv.style.color = "#FFD966";
+                    statusDiv.style.background = "rgba(80, 50, 20, 0.6)";
+                    statusDiv.style.borderColor = "#ffaa44";
                     downloadBtn.disabled = true;
                     downloadBtn.style.opacity = "0.6";
                     downloadBtn.style.cursor = "not-allowed";
@@ -837,8 +837,8 @@
                     triggerDownload();
                 } else {
                     updateStatusUI(false);
-                    statusDiv.innerHTML = "<i class='fas fa-times-circle'></i> Error: archivo APK no encontrado. Asegúrate de que 'YESLY-ADELAY.apk' esté en la misma carpeta.";
-                    statusDiv.style.color = "#FF9F8F";
+                    statusDiv.innerHTML = `<i class='fas fa-times-circle'></i> Archivo APK no encontrado. <a href="${DRIVE_URL}" target="_blank" style="color:#FFD966; text-decoration:underline;">Descargar desde Google Drive</a>`;
+                    statusDiv.style.color = "#FFD966";
                 }
             }
 
@@ -859,8 +859,8 @@
                 if (!downloadBtn.disabled) {
                     onDownloadClick();
                 } else {
-                    statusDiv.innerHTML = "<i class='fas fa-ban'></i> No se puede descargar: archivo APK no disponible.";
-                    statusDiv.style.color = "#FFA07A";
+                    statusDiv.innerHTML = `<i class='fas fa-ban'></i> Descarga local no disponible. Usa <a href="${DRIVE_URL}" target="_blank" style="color:#FFD966; text-decoration:underline;">Google Drive</a>`;
+                    statusDiv.style.color = "#FFD966";
                 }
             });
 
